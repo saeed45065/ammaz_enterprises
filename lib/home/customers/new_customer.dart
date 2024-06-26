@@ -204,7 +204,8 @@ class _NewCustomerState extends State<NewCustomer> {
                        print("2");
                        context.read<CustomerProvider>().loadingStop();
                               QuickAlert.show(context: context,
-                               type: QuickAlertType.success
+                               type: QuickAlertType.success,
+                               text: "Upload Successfully"
                                );
   
                              },);
@@ -214,11 +215,13 @@ class _NewCustomerState extends State<NewCustomer> {
                                        },);
                   
                       } catch (e) {
+                          // ignore: use_build_context_synchronously
+                          context.read<CustomerProvider>().loadingStop();
                           QuickAlert.show(
                         // ignore: use_build_context_synchronously
                         context: context,
                          type: QuickAlertType.error,
-                         text: e.toString()
+                         text: "Something Wrong"
                          );
                       }
                      
