@@ -4,6 +4,7 @@ import 'package:ammaz_enterprises/my_widgets/my_text.dart';
 import 'package:ammaz_enterprises/provider/customer_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 import 'customer_logic_part/customer_logic._part.dart';
@@ -22,6 +23,8 @@ class _NewCustomerState extends State<NewCustomer> {
  final  customerNameControler=TextEditingController();
   // Customer Balance controler
   final customerBalancecontroler=TextEditingController();
+
+  
   @override
   void initState() {
    // getsalePersonsName();
@@ -47,7 +50,9 @@ class _NewCustomerState extends State<NewCustomer> {
           ),
         ), 
       ),
-      body: Row(children: [
+      body:CustomerProvider.loading==true?const SpinKitSpinningLines(
+        color: Colors.white,
+      ): Row(children: [
         Container(
           height:  screenHeight,
           width: screenWidth/2,
@@ -181,14 +186,36 @@ class _NewCustomerState extends State<NewCustomer> {
                     ),
                 ),
                   InkWell(
-                    onTap: () {
+                    onTap: ()async {
+                    
                       try {
+                       context.read<CustomerProvider>().loadingStart();
                          var cname=customerNameControler.text.toString();
                       double balance=double.parse(customerBalancecontroler.text.toString());
-                      context.read<CustomerProvider>().readNameandBalance(cname, balance);
-                   
+                      
+                        await FirebaseFirestore.instance.collection("SalePersons").
+                        doc(CustomerProvider.selectedperson1).collection(cname)
+                         .doc(cname).set({
+                           "Name":cname,
+                           "Balance":balance
+                            }).then((_) async{
+                                  await  FirebaseFirestore.instance.collection("SalePersonAgainstCustomer").
+                       doc(cname).set({"SPN":CustomerProvider.selectedperson1.toLowerCase()}).then((value) {
+                       print("2");
+                       context.read<CustomerProvider>().loadingStop();
+                              QuickAlert.show(context: context,
+                               type: QuickAlertType.success
+                               );
+  
+                             },);
+                             customerNameControler.clear();
+                             customerBalancecontroler.clear();
+                             
+                                       },);
+                  
                       } catch (e) {
                           QuickAlert.show(
+                        // ignore: use_build_context_synchronously
                         context: context,
                          type: QuickAlertType.error,
                          text: e.toString()

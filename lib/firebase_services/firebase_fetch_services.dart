@@ -1,4 +1,4 @@
-import 'package:ammaz_enterprises/provider/customer_provider.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 mixin class FirebaseServices{

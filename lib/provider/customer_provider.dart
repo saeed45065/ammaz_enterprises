@@ -1,12 +1,4 @@
-
-
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:flutter/material.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
-
 class CustomerProvider with ChangeNotifier{
   ////////////////////////////////////  New_customer provider  /////////////////////////////////////////////
  
@@ -18,43 +10,24 @@ spn=sp;
   }
   // variable for select sale Person and method to read selected sale Person
   var selectedPerson="Please Retrive";
-  
-  get context => null;
+  static var selectedperson1="";
   void readSelectedPerson(String name){
     selectedPerson=name;
+    selectedperson1=name;
     notifyListeners();
   }
   void onretrive(){
     selectedPerson="Select Person";
     notifyListeners();
   }
-  // static variable for customer name and balance // method to read name and balance
- static bool done=false;
-  Future readNameandBalance(String cname, num balance)async{
-   
-   try {
-      await FirebaseFirestore.instance.collection("SalePersons").
-doc(selectedPerson).collection(cname)
-.doc(cname).set({
-  "Name":cname,
-  "Balance":balance
-  }).then((value) {
-    print("1");
-    
-  },);
-    } catch (e) {
-   
-    }
-    try {
-     await  FirebaseFirestore.instance.collection("SalePersonAgainstCustomer").
-    doc(cname).set({"SPN":selectedPerson.toLowerCase()}).then((value) {
-     print("2");
-     
-    },);
-    } catch (e) {
-      print(e);
-     
-    }
-    
-  }
+//   method for loading state
+static var loading=false;
+void loadingStart(){
+  loading=true;
+  notifyListeners();
 }
+void loadingStop(){
+  loading=false;
+  notifyListeners();
+}
+  }
