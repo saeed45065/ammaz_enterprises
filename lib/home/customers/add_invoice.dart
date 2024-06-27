@@ -2,9 +2,13 @@
 
 import 'package:ammaz_enterprises/my_widgets/my_container.dart';
 import 'package:ammaz_enterprises/my_widgets/my_text.dart';
+import 'package:ammaz_enterprises/provider/customer_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+import 'customer_logic_part/customer_logic._part.dart';
 
 class AddInvoice extends StatefulWidget {
   const AddInvoice({super.key});
@@ -14,6 +18,7 @@ class AddInvoice extends StatefulWidget {
 }
 
 class _AddInvoiceState extends State<AddInvoice> {
+    CustomerLogicPart addInvoiceLogicPart=CustomerLogicPart();
   // date  controler
   var invoiceDate=TextEditingController();
   // inv number controler
@@ -21,13 +26,13 @@ class _AddInvoiceState extends State<AddInvoice> {
   // inv amount controler
   final invAmount=TextEditingController();
   // select customer name
-  var selectCustomerName="";
+//  var selectCustomerName="";
 // sale person name
- var salePersonname="";
+// var salePersonname="";
   
  
   // customer list
-   List customersName=[];
+/*    List customersName=[];
    // fetch list of customers names from firebase
    void customersList(){
        FirebaseFirestore.instance.collection("SalePersonAgainstCustomer").
@@ -38,9 +43,9 @@ class _AddInvoiceState extends State<AddInvoice> {
           print(customersName);
         },);
       },);
-   }
+   } */
    // fetch saleperson name for customer
-   void salepersonNameagainstCustomer()async{
+  /*  void salepersonNameagainstCustomer()async{
         DocumentSnapshot snapNameofSalePerson= await  FirebaseFirestore.instance.collection("SalePersonAgainstCustomer").
     doc(selectCustomerName).get();
     var spn=snapNameofSalePerson["SPN"];
@@ -48,10 +53,10 @@ class _AddInvoiceState extends State<AddInvoice> {
     setState(() {
       salePersonname=spn;
     });
-   }
+   } */
   
   // method to add invoice on firebase
-
+/* 
   void uploadInvoice()async{
     
     try {
@@ -69,11 +74,11 @@ class _AddInvoiceState extends State<AddInvoice> {
       print(e);
     }
  
-  }
+  } */
   @override
   void initState() {
-    customersList();
-  
+    //customersList();
+  addInvoiceLogicPart.customersList();
     super.initState();
   }
   @override
@@ -184,6 +189,7 @@ if(pickedDate != null ){
                  controler: invNumber,
                  contentPaddingT: screenHeight/30,
                  contentPaddingL: screenWidth/60,
+                 prefixwidget: const Icon(Icons.format_list_numbered_rounded,color: Colors.blue,),
                   hintText: "Invoice Number",),
                          ),
                          SizedBox(height: screenHeight/35),
@@ -209,13 +215,15 @@ if(pickedDate != null ){
                 width: screenWidth/2,
                
                 onSelected: (value) {
-                  setState(() {
+                  context.read<CustomerProvider>().readSelectedPerson(value.toString());
+                  addInvoiceLogicPart.salepersonNameagainstCustomer();
+                 /*  setState(() {
                     selectCustomerName=value;
                     print(selectCustomerName);
-                  });
-                  salepersonNameagainstCustomer();
+                  }); */
+                //  salepersonNameagainstCustomer();
                 },
-                dropdownMenuEntries:customersName.map((e) {
+                dropdownMenuEntries:context.watch<CustomerProvider>().customersName.map((e) {
                
                   return DropdownMenuEntry(value: e, label: e);
                  
@@ -231,9 +239,7 @@ if(pickedDate != null ){
                 children: [
                   TextButton(
                     onPressed: (){
-                      setState(() {
-                        
-                      });
+                      context.read<CustomerProvider>().retriveCustomers(addInvoiceLogicPart.customersName);
                     },
                      child: const MyText(text: "Retrive Customers",color: Colors.blue,))
                 ],
@@ -248,6 +254,7 @@ if(pickedDate != null ){
                  controler: invAmount,
                  contentPaddingT: screenHeight/30,
                  contentPaddingL: screenWidth/60,
+                 prefixwidget: const Icon(Icons.attach_money_outlined,color: Colors.blue,),
                   hintText: "Invoice Amount",),
                          ),
                          SizedBox(height: screenHeight/10),
@@ -267,8 +274,8 @@ if(pickedDate != null ){
                   ),
                   InkWell(
                     onTap: () {
-                      uploadInvoice();
-                      Navigator.of(context).pop();
+                     // uploadInvoice();
+                     // Navigator.of(context).pop();
                     },
                     child: Mycontainer(
                     height:screenHeight/15 , 
@@ -318,7 +325,7 @@ if(pickedDate != null ){
                                                   ),
                                                   focusedBorder: OutlineInputBorder(
                                                     borderRadius: BorderRadius.circular(12),
-                                                    borderSide: const BorderSide(color: Colors.green,width: 1.5)
+                                                    borderSide: const BorderSide(color: Colors.blue,width: 1.5)
                                                   )
                                      ),
                                      

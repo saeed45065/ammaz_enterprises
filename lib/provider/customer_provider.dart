@@ -30,4 +30,19 @@ void loadingStop(){
   loading=false;
   notifyListeners();
 }
+
+//////////////////////////////////// add invoice page provider /////////////////////////////////////////
+
+// method to read selected customer name and static variabel for firebase_fetch_services
+static var selectedCustomerName="";
+void readSelectedCustomerName(String name){
+  selectedCustomerName=name;
+  notifyListeners();
+}
+//  list of customer name and method to fetch customers
+List customersName=[];
+void retriveCustomers(List cn){
+customersName=cn;
+notifyListeners();
+}
   }

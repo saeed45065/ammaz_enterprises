@@ -1,6 +1,7 @@
 
 import 'package:ammaz_enterprises/my_widgets/my_container.dart';
 import 'package:ammaz_enterprises/my_widgets/my_text.dart';
+import 'package:ammaz_enterprises/my_widgets/my_text_field.dart';
 import 'package:ammaz_enterprises/provider/customer_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class NewCustomer extends StatefulWidget  {
 }
 
 class _NewCustomerState extends State<NewCustomer> {
-  NewCustomerLogicPart newCustomerLogicPart=NewCustomerLogicPart();
+  CustomerLogicPart newCustomerLogicPart=CustomerLogicPart();
   
   // Customer Name controler
  final  customerNameControler=TextEditingController();
@@ -97,24 +98,26 @@ class _NewCustomerState extends State<NewCustomer> {
               SizedBox(height: screenHeight/15),
                          Padding(
                padding: EdgeInsets.symmetric(horizontal:screenWidth/20 ),
-               child: customField(
+               child: MyTextField(
                 height: screenHeight/15,
                  width: screenWidth,
-                 controler: customerNameControler,
+                 hinttext: "Customer Name",
+                 prefixIcon: const Icon(Icons.perm_identity_outlined,color: Colors.blue,),
                  contentPaddingT: screenHeight/30,
                  contentPaddingL: screenWidth/60,
-                  hintText: "Customer Name",),
+                  controller: customerNameControler,),
                          ),
               SizedBox(height: screenHeight/35),
                Padding(
                padding: EdgeInsets.symmetric(horizontal:screenWidth/20 ),
-               child: customField(
+               child: MyTextField(
                 height: screenHeight/15,
                  width: screenWidth,
-                 controler: customerBalancecontroler,
+                controller: customerBalancecontroler,
+                prefixIcon:  const Icon(Icons.attach_money_outlined,color: Colors.blue,),
                  contentPaddingT: screenHeight/30,
                  contentPaddingL: screenWidth/60,
-                  hintText: "Opening Balance",),
+                  hinttext: "Opening Balance",),
                          ),
                          SizedBox(height: screenHeight/35),
                          Padding(
@@ -201,7 +204,6 @@ class _NewCustomerState extends State<NewCustomer> {
                             }).then((_) async{
                                   await  FirebaseFirestore.instance.collection("SalePersonAgainstCustomer").
                        doc(cname).set({"SPN":CustomerProvider.selectedperson1.toLowerCase()}).then((value) {
-                       print("2");
                        context.read<CustomerProvider>().loadingStop();
                               QuickAlert.show(context: context,
                                type: QuickAlertType.success,
@@ -248,42 +250,5 @@ class _NewCustomerState extends State<NewCustomer> {
       ],),
     );
   }
-  Widget customField({var controler,
-   var prefixwidget,
-   required height,
-   required width,
-   required hintText,
-   var contentPaddingT=0.0,
-   var contentPaddingL=0.0}){
-    return  Mycontainer(
-                                 height: height,      //screenHeight/12
-                                                     width: width,   // screenWidth/3
-                                                     shadowcolor: Colors.grey.shade50,
-                                                     x: 0,
-                                                     y: 1,
-                                   circularradius: 12,
-                                   blurradius: 100,
-                                   child: TextField(
-                                    
-                                     controller: controler,
-                                                 showCursor: false,
-                                     decoration: InputDecoration(
-                                                  prefixIcon:prefixwidget ,   
-                                                   contentPadding: EdgeInsets.only(top:contentPaddingT,left: contentPaddingL ),
-                                                  hintText:hintText ,
-                                                  fillColor: const Color.fromARGB(255, 230, 229, 229),
-                                                  filled: true,
-                                                  enabledBorder:OutlineInputBorder(
-                                                    borderRadius: BorderRadius.circular(12),
-                                                    borderSide: const BorderSide(color: Colors.black,width: 0.5)
-                                                  ),
-                                                  focusedBorder: OutlineInputBorder(
-                                                    borderRadius: BorderRadius.circular(12),
-                                                    borderSide: const BorderSide(color: Colors.blue,width: 0.5)
-                                                  )
-                                     ),
-                                     
-                                   ),
-                                 );
-  }
+  
 }
